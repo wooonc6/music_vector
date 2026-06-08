@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>코사인 유사도 음악 취향 추천 모델</title>
+  <title>벡터 기반 코사인 유사도 활용 음악 취향 추천 프로그램</title>
 
   <style>
     :root {
@@ -62,9 +62,10 @@
     }
 
     h1 {
-      font-size: 38px;
+      font-size: 34px;
       margin-bottom: 12px;
       color: var(--hana-green);
+      line-height: 1.3;
     }
 
     h2 {
@@ -75,6 +76,12 @@
 
     h3 {
       color: #111827;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      color: #4b5563;
+      margin-top: 6px;
     }
 
     .formula {
@@ -200,13 +207,13 @@
 
 <section>
   <div class="card">
-    <h1>음악 취향 추천 시스템</h1>
-    <p>
-      사용자의 음악 취향을 벡터로 표현하고,
-      벡터 내적과 코사인 유사도를 이용해 가장 취향이 비슷한 사람을 찾는 모델입니다.
+    <h1>벡터 기반 코사인 유사도 활용 음악 취향 추천 프로그램 with 준희, 재호, 원준</h1>
+    <p class="subtitle">
+      사용자 취향 벡터를 비교하여 가장 비슷한 음악 취향을 가진 사용자를 찾는 수학 모델링 프로그램
     </p>
     <p>
-      이 모델은 <b>내 취향 벡터</b>와 <b>준희·재호·원준의 취향 벡터</b>를 비교합니다.
+      사용자의 음악 취향을 벡터로 표현하고,
+      벡터 내적과 코사인 유사도를 이용해 가장 취향이 비슷한 사람을 찾습니다.
     </p>
   </div>
 </section>
@@ -219,17 +226,18 @@
     <p><b>K-pop, 힙합, 발라드, EDM, 인디, Rock, OST</b></p>
 
     <div class="formula">
-      a = (K-pop, 힙합, 발라드, EDM, 인디, Rock, OST)
+      사용자 취향 벡터 = (K-pop, 힙합, 발라드, EDM, 인디, Rock, OST)
     </div>
 
     <p>
-      내 취향 벡터를 a라고 하면, 우리는 a와 각 사용자의 벡터를 비교합니다.
+      입력된 사용자 취향 벡터를 a라고 하면,
+      프로그램은 a와 준희·재호·원준의 사용자 취향 벡터를 각각 비교합니다.
     </p>
 
     <div class="formula">
-      a · 준희<br>
-      a · 재호<br>
-      a · 원준
+      a · 준희의 사용자 취향 벡터<br>
+      a · 재호의 사용자 취향 벡터<br>
+      a · 원준의 사용자 취향 벡터
     </div>
 
     <p>
@@ -251,14 +259,14 @@
     </div>
 
     <p>
-      cos θ가 1에 가까울수록 두 취향 벡터의 방향이 비슷하다는 뜻입니다.
+      cos θ가 1에 가까울수록 두 사용자 취향 벡터의 방향이 비슷하다는 뜻입니다.
     </p>
   </div>
 </section>
 
 <section>
   <div class="card">
-    <h2>2. 내 음악 취향 입력하기</h2>
+    <h2>2. 사용자 음악 취향 입력하기</h2>
     <p>각 장르에 대해 0점부터 5점까지 선호도를 입력하세요.</p>
 
     <div id="inputArea"></div>
@@ -301,7 +309,7 @@
     </table>
 
     <p class="small">
-      각 행은 한 사람의 7차원 취향 벡터입니다.
+      각 행은 한 사람의 7차원 사용자 취향 벡터입니다.
       추천 노래는 각 사용자의 높은 선호 장르를 반영해 미리 구성했습니다.
     </p>
   </div>
@@ -312,7 +320,7 @@
     <h2>4. 가장 비슷한 사용자 찾기</h2>
 
     <p>
-      내 취향 벡터 a와 준희, 재호, 원준의 벡터를 각각 비교해
+      입력된 사용자 취향 벡터와 준희, 재호, 원준의 사용자 취향 벡터를 각각 비교해
       cos θ 값이 가장 큰 사람을 찾습니다.
     </p>
 
@@ -425,15 +433,15 @@
   }
 
   function calculateSimilarity() {
-    const myVector = genres.map((genre, index) => {
+    const userVector = genres.map((genre, index) => {
       return Number(document.getElementById(`genre-${index}`).value);
     });
 
     const results = users.map(user => {
-      const dot = dotProduct(myVector, user.vector);
-      const magA = magnitude(myVector);
+      const dot = dotProduct(userVector, user.vector);
+      const magA = magnitude(userVector);
       const magB = magnitude(user.vector);
-      const similarity = cosineSimilarity(myVector, user.vector);
+      const similarity = cosineSimilarity(userVector, user.vector);
 
       return {
         name: user.name,
@@ -471,8 +479,8 @@
       .join("");
 
     document.getElementById("result").innerHTML = `
-      <h3>내 취향 벡터</h3>
-      <p>a = (${myVector.join(", ")})</p>
+      <h3>입력된 사용자 취향 벡터</h3>
+      <p>a = (${userVector.join(", ")})</p>
 
       <h3>가장 취향이 비슷한 사용자</h3>
 
@@ -486,12 +494,12 @@
           </p>
 
           <p>
-            ${best.name}과의 코사인 유사도는
+            ${best.name}의 사용자 취향 벡터와의 코사인 유사도는
             <span class="highlight">${best.similarity.toFixed(4)}</span>입니다.
           </p>
 
           <p class="small">
-            따라서 ${best.name}의 취향을 반영한 노래 목록을 추천합니다.
+            따라서 ${best.name}의 사용자 취향 벡터를 반영한 노래 목록을 추천합니다.
           </p>
         </div>
       </div>
@@ -520,8 +528,8 @@
       </table>
 
       <p>
-        이 결과는 내 취향 벡터 a와 각 사용자의 취향 벡터를 비교한 것입니다.
-        cos θ 값이 가장 큰 사용자는 내 취향과 가장 비슷한 방향을 가진 벡터입니다.
+        이 결과는 입력된 사용자 취향 벡터 a와 각 사용자의 취향 벡터를 비교한 것입니다.
+        cos θ 값이 가장 큰 사용자는 입력된 사용자 취향과 가장 비슷한 방향을 가진 벡터입니다.
       </p>
     `;
   }
