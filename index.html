@@ -12,14 +12,13 @@
       --mo-red: #9f1d2f;
       --mo-light: #fff1f3;
       --ink: #1f2937;
-      --card: rgba(255, 255, 255, 0.92);
+      --card: rgba(255, 255, 255, 0.94);
     }
 
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background:
-        linear-gradient(135deg, var(--hana-light), #ffffff 45%, var(--mo-light));
+      background: linear-gradient(135deg, var(--hana-light), #ffffff 45%, var(--mo-light));
       color: var(--ink);
       line-height: 1.7;
     }
@@ -28,7 +27,7 @@
       position: sticky;
       top: 0;
       z-index: 10;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid #e5e7eb;
     }
@@ -112,6 +111,10 @@
       cursor: pointer;
     }
 
+    button:hover {
+      opacity: 0.9;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -155,6 +158,23 @@
       border-radius: 22px;
       border: 4px solid #f3f4f6;
       box-shadow: 0 8px 22px rgba(0,0,0,0.14);
+      background: #f3f4f6;
+    }
+
+    .playlist {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .playlist li {
+      background: linear-gradient(90deg, #f0fdf4, #fff1f2);
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
     }
 
     .highlight {
@@ -280,7 +300,10 @@
       </tbody>
     </table>
 
-    <p class="small">각 행은 한 사람의 7차원 취향 벡터입니다.</p>
+    <p class="small">
+      각 행은 한 사람의 7차원 취향 벡터입니다.
+      추천 노래는 각 사용자의 높은 선호 장르를 반영해 미리 구성했습니다.
+    </p>
   </div>
 </section>
 
@@ -306,17 +329,53 @@
     {
       name: "준희",
       vector: [3, 2, 4, 5, 3, 2, 1],
-      image: "junhee.jpg"
+      image: "junhee.jpg",
+      songs: [
+        "Alan Walker - Faded",
+        "Zedd, Alessia Cara - Stay",
+        "Avicii - The Nights",
+        "Marshmello, Bastille - Happier",
+        "The Chainsmokers, Coldplay - Something Just Like This",
+        "아이유 - 밤편지",
+        "폴킴 - 모든 날, 모든 순간",
+        "태연 - 사계",
+        "볼빨간사춘기 - 나만, 봄",
+        "NewJeans - Ditto"
+      ]
     },
     {
       name: "재호",
       vector: [5, 3, 3, 2, 1, 2, 3],
-      image: "jaeho.jpg"
+      image: "jaeho.jpg",
+      songs: [
+        "NewJeans - Hype Boy",
+        "IVE - I AM",
+        "LE SSERAFIM - ANTIFRAGILE",
+        "aespa - Spicy",
+        "SEVENTEEN - 손오공",
+        "BTS - Dynamite",
+        "BLACKPINK - Lovesick Girls",
+        "AKMU - Love Lee",
+        "10CM - 봄이 좋냐??",
+        "Crush - Beautiful"
+      ]
     },
     {
       name: "원준",
       vector: [2, 1, 3, 2, 5, 4, 3],
-      image: "wonjun.jpg"
+      image: "wonjun.jpg",
+      songs: [
+        "검정치마 - Everything",
+        "혁오 - TOMBOY",
+        "잔나비 - 주저하는 연인들을 위해",
+        "Oasis - Don't Look Back In Anger",
+        "Nirvana - Smells Like Teen Spirit",
+        "Radiohead - Creep",
+        "DAY6 - 한 페이지가 될 수 있게",
+        "넬 - 기억을 걷는 시간",
+        "Coldplay - Yellow",
+        "성시경 - 너의 모든 순간"
+      ]
     }
   ];
 
@@ -380,6 +439,7 @@
         name: user.name,
         vector: user.vector,
         image: user.image,
+        songs: user.songs,
         dot: dot,
         magA: magA,
         magB: magB,
@@ -406,6 +466,10 @@
       `;
     });
 
+    const songList = best.songs
+      .map(song => `<li>${song}</li>`)
+      .join("");
+
     document.getElementById("result").innerHTML = `
       <h3>내 취향 벡터</h3>
       <p>a = (${myVector.join(", ")})</p>
@@ -425,8 +489,17 @@
             ${best.name}과의 코사인 유사도는
             <span class="highlight">${best.similarity.toFixed(4)}</span>입니다.
           </p>
+
+          <p class="small">
+            따라서 ${best.name}의 취향을 반영한 노래 목록을 추천합니다.
+          </p>
         </div>
       </div>
+
+      <h3>${best.name}의 취향 기반 추천 노래 10곡</h3>
+      <ul class="playlist">
+        ${songList}
+      </ul>
 
       <h3>전체 계산 결과</h3>
 
