@@ -2,125 +2,368 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>코사인 유사도 음악 추천 모델</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>코사인 유사도 음악 취향 추천 모델</title>
+
   <style>
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
       background: #f5f7fb;
-      padding: 30px;
       color: #222;
+      line-height: 1.7;
     }
-    .box {
+
+    section {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 80px 24px;
+    }
+
+    .card {
       background: white;
-      padding: 24px;
-      border-radius: 16px;
-      max-width: 900px;
-      margin: auto;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      margin-bottom: 28px;
     }
-    h1 { color: #222; }
-    .genre {
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      font-size: 28px;
+      margin-bottom: 16px;
+      color: #3730a3;
+    }
+
+    h3 {
+      margin-top: 24px;
+      color: #111827;
+    }
+
+    .formula {
+      background: #eef2ff;
+      border-left: 6px solid #4f46e5;
+      padding: 18px;
+      border-radius: 12px;
+      font-size: 20px;
+      margin: 18px 0;
+      font-family: "Courier New", monospace;
+    }
+
+    .genre-row {
       display: grid;
-      grid-template-columns: 120px 1fr 40px;
-      gap: 12px;
+      grid-template-columns: 100px 1fr 40px;
+      gap: 14px;
       align-items: center;
-      margin: 12px 0;
+      margin: 14px 0;
     }
-    input[type="range"] { width: 100%; }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
     button {
-      margin-top: 20px;
-      padding: 12px 20px;
+      margin-top: 24px;
+      padding: 14px 22px;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       background: #4f46e5;
       color: white;
       font-size: 16px;
       cursor: pointer;
     }
-    .result {
-      margin-top: 24px;
-      padding: 18px;
-      background: #eef2ff;
-      border-radius: 12px;
-      line-height: 1.7;
+
+    button:hover {
+      background: #3730a3;
     }
-    code {
-      background: #eee;
-      padding: 2px 5px;
-      border-radius: 5px;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+      background: white;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background: #eef2ff;
+    }
+
+    .result-box {
+      background: #ecfeff;
+      border-left: 6px solid #0891b2;
+      padding: 22px;
+      border-radius: 14px;
+      margin-top: 24px;
+    }
+
+    .small {
+      font-size: 14px;
+      color: #555;
+    }
+
+    .highlight {
+      font-weight: bold;
+      color: #4f46e5;
     }
   </style>
 </head>
+
 <body>
-  <div class="box">
-    <h1>음악 취향 벡터 추천 시스템</h1>
 
-    <p>
-      사용자의 음악 취향을 8차원 벡터로 표현하고,
-      코사인 유사도를 이용해 가장 비슷한 취향의 사용자를 찾습니다.
-    </p>
-
-    <p>
-      장르 순서:
-      <b>K-pop, 힙합, 발라드, EDM, 인디, Rock, 재즈, OST</b>
-    </p>
-
-    <div id="inputs"></div>
-
-    <button onclick="recommend()">추천 결과 보기</button>
-
-    <div class="result" id="result">
-      취향 점수를 입력한 뒤 버튼을 눌러보세요.
+  <section>
+    <div class="card">
+      <h1>음악 취향 추천 시스템</h1>
+      <p>
+        이 웹페이지는 사용자의 음악 취향을 벡터로 표현하고,
+        벡터 내적과 코사인 유사도를 이용해 가장 취향이 비슷한 사람을 찾는 모델입니다.
+      </p>
+      <p>
+        비교하는 대상은 <b>노래와 사용자</b>가 아니라,
+        <b>사용자와 사용자</b>입니다.
+      </p>
     </div>
-  </div>
+  </section>
+
+  <section>
+    <div class="card">
+      <h2>1. 벡터 내적과 코사인 유사도</h2>
+
+      <p>
+        우리는 음악 취향을 다음 7개의 장르에 대한 선호도 점수로 나타냅니다.
+      </p>
+
+      <p>
+        <b>K-pop, 힙합, 발라드, EDM, 인디, Rock, OST</b>
+      </p>
+
+      <p>
+        예를 들어 어떤 사용자의 취향이 다음과 같다면,
+      </p>
+
+      <div class="formula">
+        a = (5, 3, 4, 2, 1, 2, 3)
+      </div>
+
+      <p>
+        이 사용자의 취향은 7차원 벡터 a로 표현됩니다.
+      </p>
+
+      <h3>무엇과 무엇을 비교하는가?</h3>
+
+      <p>
+        내 취향 벡터를 a라고 하고,
+        재호, 준희, 원준의 취향 벡터를 각각 b라고 두면
+        우리는 다음 값을 각각 계산합니다.
+      </p>
+
+      <div class="formula">
+        a · 준희, a · 재호, a · 원준
+      </div>
+
+      <p>
+        즉, 내 취향 벡터와 다른 사람의 취향 벡터를 하나씩 내적합니다.
+      </p>
+
+      <h3>내적의 의미</h3>
+
+      <p>
+        두 벡터의 내적은 같은 위치의 성분끼리 곱한 뒤 모두 더하는 계산입니다.
+      </p>
+
+      <div class="formula">
+        a · b = a1×b1 + a2×b2 + ... + a7×b7
+      </div>
+
+      <p>
+        예를 들어 두 사람이 K-pop을 모두 좋아하면
+        K-pop 점수끼리 곱한 값이 크게 더해집니다.
+        이렇게 같은 장르를 함께 좋아할수록 내적 값은 커집니다.
+      </p>
+
+      <h3>왜 코사인 유사도를 사용하는가?</h3>
+
+      <p>
+        내적 값만 사용하면 점수를 전반적으로 높게 주는 사람이 유리해질 수 있습니다.
+        그래서 벡터의 크기로 나누어 방향의 유사성을 비교합니다.
+      </p>
+
+      <div class="formula">
+        cos θ = (a · b) / (|a| |b|)
+      </div>
+
+      <p>
+        여기서 cos θ가 1에 가까울수록 두 취향 벡터의 방향이 비슷하다는 뜻입니다.
+        방향이 비슷하다는 것은 장르별 선호 패턴이 비슷하다는 의미입니다.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="card">
+      <h2>2. 내 음악 취향 입력하기</h2>
+      <p>
+        각 장르에 대해 0점부터 5점까지 선호도를 입력하세요.
+      </p>
+
+      <div id="inputArea"></div>
+
+      <button onclick="calculateSimilarity()">가장 비슷한 사용자 찾기</button>
+    </div>
+  </section>
+
+  <section>
+    <div class="card">
+      <h2>3. 사전에 지정된 사용자 취향 벡터</h2>
+
+      <p>
+        발표용 모델에서는 세 명의 사용자 취향을 미리 정해두었습니다.
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>사용자</th>
+            <th>K-pop</th>
+            <th>힙합</th>
+            <th>발라드</th>
+            <th>EDM</th>
+            <th>인디</th>
+            <th>Rock</th>
+            <th>OST</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>준희</td>
+            <td>3</td>
+            <td>2</td>
+            <td>4</td>
+            <td>5</td>
+            <td>3</td>
+            <td>2</td>
+            <td>1</td>
+          </tr>
+          <tr>
+            <td>재호</td>
+            <td>5</td>
+            <td>3</td>
+            <td>3</td>
+            <td>2</td>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+          </tr>
+          <tr>
+            <td>원준</td>
+            <td>2</td>
+            <td>1</td>
+            <td>3</td>
+            <td>2</td>
+            <td>5</td>
+            <td>4</td>
+            <td>3</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="small">
+        각 행은 한 사람의 7차원 취향 벡터입니다.
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="card">
+      <h2>4. 가장 비슷한 사용자 찾기</h2>
+
+      <p>
+        버튼을 누르면 내 취향 벡터와 준희, 재호, 원준의 벡터를 각각 비교합니다.
+      </p>
+
+      <div class="formula">
+        내 벡터 a vs 준희 벡터<br>
+        내 벡터 a vs 재호 벡터<br>
+        내 벡터 a vs 원준 벡터
+      </div>
+
+      <div id="result" class="result-box">
+        아직 계산 결과가 없습니다.
+      </div>
+    </div>
+  </section>
 
   <script>
-    const genres = ["K-pop", "힙합", "발라드", "EDM", "인디", "Rock", "재즈", "OST"];
+    const genres = [
+      "K-pop",
+      "힙합",
+      "발라드",
+      "EDM",
+      "인디",
+      "Rock",
+      "OST"
+    ];
 
     const users = [
       {
-        name: "User B",
-        vector: [5, 4, 2, 2, 3, 1, 1, 4],
-        songs: ["NewJeans - Ditto", "아이유 - 밤편지", "태연 - 그대라는 시"]
+        name: "준희",
+        vector: [3, 2, 4, 5, 3, 2, 1]
       },
       {
-        name: "User C",
-        vector: [1, 2, 1, 5, 2, 4, 1, 1],
-        songs: ["Martin Garrix - Animals", "Imagine Dragons - Believer"]
+        name: "재호",
+        vector: [5, 3, 3, 2, 1, 2, 3]
       },
       {
-        name: "User D",
-        vector: [1, 1, 2, 1, 2, 2, 5, 1],
-        songs: ["Miles Davis - So What", "Chet Baker - I Fall In Love Too Easily"]
+        name: "원준",
+        vector: [2, 1, 3, 2, 5, 4, 3]
       }
     ];
 
-    const inputsDiv = document.getElementById("inputs");
+    const inputArea = document.getElementById("inputArea");
 
     genres.forEach((genre, index) => {
-      inputsDiv.innerHTML += `
-        <div class="genre">
+      inputArea.innerHTML += `
+        <div class="genre-row">
           <label>${genre}</label>
-          <input type="range" min="0" max="5" value="3" id="g${index}"
-                 oninput="document.getElementById('v${index}').innerText=this.value">
-          <span id="v${index}">3</span>
+          <input
+            type="range"
+            min="0"
+            max="5"
+            value="3"
+            id="genre-${index}"
+            oninput="document.getElementById('value-${index}').innerText = this.value"
+          />
+          <span id="value-${index}">3</span>
         </div>
       `;
     });
 
     function dotProduct(a, b) {
       let sum = 0;
+
       for (let i = 0; i < a.length; i++) {
         sum += a[i] * b[i];
       }
+
       return sum;
     }
 
-    function magnitude(a) {
+    function magnitude(vector) {
       let sum = 0;
-      for (let i = 0; i < a.length; i++) {
-        sum += a[i] * a[i];
+
+      for (let i = 0; i < vector.length; i++) {
+        sum += vector[i] * vector[i];
       }
+
       return Math.sqrt(sum);
     }
 
@@ -129,49 +372,95 @@
       const magA = magnitude(a);
       const magB = magnitude(b);
 
-      if (magA === 0 || magB === 0) return 0;
+      if (magA === 0 || magB === 0) {
+        return 0;
+      }
 
       return dot / (magA * magB);
     }
 
-    function recommend() {
-      const myVector = genres.map((_, i) => Number(document.getElementById(`g${i}`).value));
-
-      let bestUser = null;
-      let bestSimilarity = -1;
-
-      users.forEach(user => {
-        const sim = cosineSimilarity(myVector, user.vector);
-        if (sim > bestSimilarity) {
-          bestSimilarity = sim;
-          bestUser = user;
-        }
+    function calculateSimilarity() {
+      const myVector = genres.map((genre, index) => {
+        return Number(document.getElementById(`genre-${index}`).value);
       });
 
-      const dot = dotProduct(myVector, bestUser.vector);
-      const magA = magnitude(myVector).toFixed(2);
-      const magB = magnitude(bestUser.vector).toFixed(2);
+      const results = users.map(user => {
+        const dot = dotProduct(myVector, user.vector);
+        const magA = magnitude(myVector);
+        const magB = magnitude(user.vector);
+        const similarity = cosineSimilarity(myVector, user.vector);
+
+        return {
+          name: user.name,
+          vector: user.vector,
+          dot: dot,
+          magA: magA,
+          magB: magB,
+          similarity: similarity
+        };
+      });
+
+      results.sort((a, b) => b.similarity - a.similarity);
+
+      const best = results[0];
+
+      let tableRows = "";
+
+      results.forEach(result => {
+        tableRows += `
+          <tr>
+            <td>${result.name}</td>
+            <td>${result.vector.join(", ")}</td>
+            <td>${result.dot.toFixed(2)}</td>
+            <td>${result.magA.toFixed(2)}</td>
+            <td>${result.magB.toFixed(2)}</td>
+            <td>${result.similarity.toFixed(4)}</td>
+          </tr>
+        `;
+      });
 
       document.getElementById("result").innerHTML = `
-        <b>나의 취향 벡터 a</b><br>
-        a = (${myVector.join(", ")})<br><br>
+        <h3>내 취향 벡터</h3>
+        <p>
+          a = (${myVector.join(", ")})
+        </p>
 
-        <b>가장 비슷한 사용자</b><br>
-        ${bestUser.name}<br>
-        b = (${bestUser.vector.join(", ")})<br><br>
+        <h3>가장 취향이 비슷한 사용자</h3>
+        <p>
+          가장 코사인 유사도가 높은 사람은
+          <span class="highlight">${best.name}</span>입니다.
+        </p>
 
-        <b>계산 원리</b><br>
-        a · b = ${dot}<br>
-        |a| = ${magA}, |b| = ${magB}<br>
-        cos θ = (a · b) / (|a| |b|)<br><br>
+        <p>
+          ${best.name}과의 코사인 유사도는
+          <span class="highlight">${best.similarity.toFixed(4)}</span>입니다.
+        </p>
 
-        <b>코사인 유사도</b><br>
-        ${bestSimilarity.toFixed(4)}<br><br>
+        <h3>전체 계산 결과</h3>
 
-        <b>추천 노래</b><br>
-        ${bestUser.songs.map(song => "• " + song).join("<br>")}
+        <table>
+          <thead>
+            <tr>
+              <th>사용자</th>
+              <th>비교 벡터</th>
+              <th>a · b</th>
+              <th>|a|</th>
+              <th>|b|</th>
+              <th>cos θ</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tableRows}
+          </tbody>
+        </table>
+
+        <p>
+          이 결과는 내 취향 벡터 a와 각 사용자의 취향 벡터를 비교한 것입니다.
+          cos θ 값이 가장 큰 사용자는 내 취향과 가장 비슷한 방향을 가진 벡터입니다.
+        </p>
       `;
     }
   </script>
+
 </body>
 </html>
