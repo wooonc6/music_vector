@@ -6,556 +6,69 @@
   <title>벡터 기반 코사인 유사도 활용 음악 취향 추천 프로그램</title>
 
   <style>
-    :root {
-      --hana-green: #007a5e;
-      --hana-light: #e8f5f0;
-      --mo-red: #9f1d2f;
-      --mo-light: #fff1f3;
-      --ink: #1f2937;
-      --card: rgba(255, 255, 255, 0.94);
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, var(--hana-light), #ffffff 45%, var(--mo-light));
-      color: var(--ink);
-      line-height: 1.7;
-    }
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    .top-logos {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 14px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .top-logos img {
-      height: 58px;
-      object-fit: contain;
-    }
-
-    section {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 70px 24px;
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: 24px;
-      padding: 34px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      border: 1px solid rgba(255,255,255,0.7);
-      margin-bottom: 28px;
-    }
-
-    h1 {
-      font-size: 34px;
-      margin-bottom: 12px;
-      color: var(--hana-green);
-      line-height: 1.3;
-    }
-
-    h2 {
-      font-size: 28px;
-      margin-bottom: 16px;
-      color: var(--mo-red);
-    }
-
-    h3 {
-      color: #111827;
-    }
-
-    .subtitle {
-      font-size: 18px;
-      color: #4b5563;
-      margin-top: 6px;
-    }
-
-    .formula {
-      background: linear-gradient(90deg, #edfdf7, #fff5f6);
-      border-left: 6px solid var(--hana-green);
-      padding: 18px;
-      border-radius: 14px;
-      font-size: 20px;
-      margin: 18px 0;
-      font-family: "Courier New", monospace;
-    }
-
-    .genre-row {
-      display: grid;
-      grid-template-columns: 100px 1fr 40px;
-      gap: 14px;
-      align-items: center;
-      margin: 14px 0;
-    }
-
-    input[type="range"] {
-      width: 100%;
-      accent-color: var(--hana-green);
-    }
-
-    button {
-      margin-top: 24px;
-      padding: 14px 22px;
-      border: none;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--hana-green), var(--mo-red));
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      opacity: 0.9;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 18px;
-      background: white;
-      overflow: hidden;
-      border-radius: 12px;
-    }
-
-    th, td {
-      border: 1px solid #e5e7eb;
-      padding: 10px;
-      text-align: center;
-    }
-
-    th {
-      background: #f0f7f4;
-      color: var(--hana-green);
-    }
-
-    .result-box {
-      background: #ffffff;
-      border-left: 6px solid var(--mo-red);
-      padding: 24px;
-      border-radius: 16px;
-      margin-top: 24px;
-    }
-
-    .winner {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      flex-wrap: wrap;
-      margin: 18px 0;
-    }
-
-    .winner img {
-      width: 170px;
-      height: 170px;
-      object-fit: cover;
-      border-radius: 22px;
-      border: 4px solid #f3f4f6;
-      box-shadow: 0 8px 22px rgba(0,0,0,0.14);
-      background: #f3f4f6;
-    }
-
-    .playlist {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 12px;
-      margin-top: 16px;
-      padding: 0;
-      list-style: none;
-    }
-
-    .playlist li {
-      background: linear-gradient(90deg, #f0fdf4, #fff1f2);
-      padding: 12px 14px;
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
-    }
-
-    .highlight {
-      font-weight: bold;
-      color: var(--mo-red);
-    }
-
-    .small {
-      font-size: 14px;
-      color: #555;
-    }
+    :root { --hana-green: #007a5e; --hana-light: #e8f5f0; --mo-red: #9f1d2f; --mo-light: #fff1f3; --ink: #1f2937; --card: rgba(255, 255, 255, 0.94); }
+    body { margin: 0; font-family: Arial, sans-serif; background: linear-gradient(135deg, var(--hana-light), #ffffff 45%, var(--mo-light)); color: var(--ink); line-height: 1.7; }
+    header { position: sticky; top: 0; z-index: 10; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(10px); border-bottom: 1px solid #e5e7eb; }
+    .top-logos { max-width: 1000px; margin: 0 auto; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .top-logos img { height: 58px; object-fit: contain; }
+    section { max-width: 960px; margin: 0 auto; padding: 70px 24px; }
+    .card { background: var(--card); border-radius: 24px; padding: 34px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid rgba(255,255,255,0.7); margin-bottom: 28px; }
+    h1 { font-size: 34px; margin-bottom: 12px; color: var(--hana-green); line-height: 1.3; }
+    h2 { font-size: 28px; margin-bottom: 16px; color: var(--mo-red); }
+    h3 { color: #111827; }
+    .subtitle { font-size: 18px; color: #4b5563; margin-top: 6px; }
+    .formula { background: linear-gradient(90deg, #edfdf7, #fff5f6); border-left: 6px solid var(--hana-green); padding: 18px; border-radius: 14px; font-size: 20px; margin: 18px 0; font-family: "Courier New", monospace; }
+    .genre-row { display: grid; grid-template-columns: 100px 1fr 40px; gap: 14px; align-items: center; margin: 14px 0; }
+    input[type="range"] { width: 100%; accent-color: var(--hana-green); }
+    button { margin-top: 24px; padding: 14px 22px; border: none; border-radius: 14px; background: linear-gradient(135deg, var(--hana-green), var(--mo-red)); color: white; font-size: 16px; cursor: pointer; }
+    button:hover { opacity: 0.9; }
+    table { width: 100%; border-collapse: collapse; margin-top: 18px; background: white; overflow: hidden; border-radius: 12px; }
+    th, td { border: 1px solid #e5e7eb; padding: 10px; text-align: center; }
+    th { background: #f0f7f4; color: var(--hana-green); }
+    .result-box { background: #ffffff; border-left: 6px solid var(--mo-red); padding: 24px; border-radius: 16px; margin-top: 24px; }
+    .winner { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; margin: 18px 0; }
+    .winner img { width: 170px; height: 170px; object-fit: cover; border-radius: 22px; border: 4px solid #f3f4f6; box-shadow: 0 8px 22px rgba(0,0,0,0.14); background: #f3f4f6; }
+    .playlist { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 16px; padding: 0; list-style: none; }
+    .playlist li { background: linear-gradient(90deg, #f0fdf4, #fff1f2); padding: 12px 14px; border-radius: 12px; border: 1px solid #e5e7eb; }
+    .highlight { font-weight: bold; color: var(--mo-red); }
+    .small { font-size: 14px; color: #555; }
   </style>
 </head>
-
 <body>
-
-<header>
-  <div class="top-logos">
-    <img src="hana.png" alt="Hana logo">
-    <img src="mo.png" alt="MO logo">
-  </div>
-</header>
-
-<section>
-  <div class="card">
-    <h1>
-      벡터 기반 코사인 유사도 활용 음악 취향 추천 프로그램
-      <br>
-      with 17기 엠오
-    </h1>
-
-    <p class="subtitle">
-      17기 엠오와 함께하는 음악 취향 추천
-    </p>
-
-    <p class="heart-title">
-      ❤️ 엠오 최초 참여형 자주발 ❤️
-    </p>
-    
-    <p class="subtitle">
-      사용자 취향 벡터를 비교하여 가장 비슷한 음악 취향을 가진 사용자를 찾는 수학 모델링 프로그램
-    </p>
-    <p>
-      사용자의 음악 취향을 벡터로 표현하고,
-      벡터 내적과 코사인 유사도를 이용해 가장 취향이 비슷한 사람을 찾습니다!
-    </p>
-  </div>
-</section>
-
-<section>
-  <div class="card">
-    <h2>1. 벡터 내적과 코사인 유사도</h2>
-
-    <p>음악 취향을 7개의 장르 점수로 표현합니다.</p>
-    <p><b>K-pop, 힙합, 발라드, EDM, 인디, Rock, 재즈</b></p>
-
-    <div class="formula">
-      사용자 취향 벡터 = (K-pop, 힙합, 발라드, EDM, 인디, Rock, 재즈)
-    </div>
-
-    <p>
-      입력된 사용자 취향 벡터를 a라고 하면,
-      프로그램은 a와 여러 사용자의 취향 벡터를 각각 비교합니다.
-    </p>
-
-    <div class="formula">
-      a · b = a1×b1 + a2×b2 + ... + a7×b7
-    </div>
-
-    <p>
-      내적은 같은 위치의 장르 점수끼리 곱한 뒤 모두 더하는 계산입니다.
-      둘 다 같은 장르를 높게 좋아하면 큰 수끼리 곱해져 내적 값이 커집니다.
-      하지만 내적만 쓰면 점수를 전체적으로 높게 주는 사람이 유리할 수 있으므로,
-      벡터의 크기로 나누어 방향의 유사성을 비교합니다.
-    </p>
-
-    <div class="formula">
-      cos θ = (a · b) / (|a| |b|)
-    </div>
-
-    <p>
-      cos θ가 1에 가까울수록 두 사용자 취향 벡터의 방향이 비슷하다는 뜻입니다.
-    </p>
-  </div>
-</section>
-
-<section>
-  <div class="card">
-    <h2>2. 사용자 음악 취향 입력하기</h2>
-    <p>각 장르에 대해 0점부터 5점까지 선호도를 입력하세요.</p>
-
-    <div id="inputArea"></div>
-
-    <button onclick="calculateSimilarity()">가장 비슷한 사용자 찾기</button>
-  </div>
-</section>
-
-<section>
-  <div class="card">
-    <h2>3. 비공개 고정 데이터 기반 비교</h2>
-
-    <p>
-      프로그램 내부에 저장된 17기 엠오 친구들의 음악 취향 벡터와 비교합니다.
-      실제 고정 데이터값은 화면에 표시하지 않고, 계산 결과에서 코사인 유사도만 확인할 수 있습니다.
-    </p>
-  </div>
-</section>
-
-<section>
-  <div class="card">
-    <h2>4. 가장 비슷한 사용자 찾기</h2>
-
-    <p>
-      입력된 사용자 취향 벡터와 여러 사용자의 취향 벡터를 각각 비교해
-      cos θ 값이 가장 큰 사람을 찾습니다.
-    </p>
-
-    <div id="result" class="result-box">
-      아직 계산 결과가 없습니다.
-    </div>
-  </div>
-</section>
-
+<header><div class="top-logos"><img src="hana.png" alt="Hana logo"><img src="mo.png" alt="MO logo"></div></header>
+<section><div class="card"><h1>벡터 기반 코사인 유사도 활용 음악 취향 추천 프로그램<br>with 17기 엠오</h1><p class="subtitle">17기 엠오와 함께하는 음악 취향 추천</p><p class="heart-title">❤️ 엠오 최초 참여형 자주발 ❤️</p><p class="subtitle">사용자 취향 벡터를 비교하여 가장 비슷한 음악 취향을 가진 사용자를 찾는 수학 모델링 프로그램</p><p>사용자의 음악 취향을 벡터로 표현하고, 벡터 내적과 코사인 유사도를 이용해 가장 취향이 비슷한 사람을 찾습니다!</p></div></section>
+<section><div class="card"><h2>1. 벡터 내적과 코사인 유사도</h2><p>음악 취향을 7개의 장르 점수로 표현합니다.</p><p><b>K-pop, 힙합, 발라드, EDM, 인디, Rock, 재즈</b></p><div class="formula">사용자 취향 벡터 = (K-pop, 힙합, 발라드, EDM, 인디, Rock, 재즈)</div><p>입력된 사용자 취향 벡터를 a라고 하면, 프로그램은 a와 여러 사용자의 취향 벡터를 각각 비교합니다.</p><div class="formula">a · b = a1×b1 + a2×b2 + ... + a7×b7</div><p>내적은 같은 위치의 장르 점수끼리 곱한 뒤 모두 더하는 계산입니다. 둘 다 같은 장르를 높게 좋아하면 큰 수끼리 곱해져 내적 값이 커집니다. 하지만 내적만 쓰면 점수를 전체적으로 높게 주는 사람이 유리할 수 있으므로, 벡터의 크기로 나누어 방향의 유사성을 비교합니다.</p><div class="formula">cos θ = (a · b) / (|a| |b|)</div><p>cos θ가 1에 가까울수록 두 사용자 취향 벡터의 방향이 비슷하다는 뜻입니다.</p></div></section>
+<section><div class="card"><h2>2. 사용자 음악 취향 입력하기</h2><p>각 장르에 대해 0점부터 5점까지 선호도를 입력하세요.</p><div id="inputArea"></div><button onclick="calculateSimilarity()">가장 비슷한 사용자 찾기</button></div></section>
+<section><div class="card"><h2>3. 비공개 고정 데이터 기반 비교</h2><p>프로그램 내부에 저장된 17기 엠오 친구들의 음악 취향 벡터와 비교합니다. 실제 고정 데이터값은 화면에 표시하지 않고, 계산 결과에서 코사인 유사도만 확인할 수 있습니다.</p></div></section>
+<section><div class="card"><h2>4. 가장 비슷한 사용자 찾기</h2><p>입력된 사용자 취향 벡터와 여러 사용자의 취향 벡터를 각각 비교해 cos θ 값이 가장 큰 사람을 찾습니다.</p><div id="result" class="result-box">아직 계산 결과가 없습니다.</div></div></section>
 <script>
   const genres = ["K-pop", "힙합", "발라드", "EDM", "인디", "Rock", "재즈"];
-
-  const defaultSongs = [
-    "NewJeans - Ditto",
-    "IVE - I AM",
-    "LE SSERAFIM - ANTIFRAGILE",
-    "DAY6 - 한 페이지가 될 수 있게",
-    "잔나비 - 주저하는 연인들을 위해",
-    "아이유 - 밤편지",
-    "Coldplay - Yellow",
-    "성시경 - 너의 모든 순간",
-    "AKMU - Love Lee",
-    "폴킴 - 모든 날, 모든 순간"
-  ];
-
   const users = [
-    {
-      name: "준희",
-      vector: [3, 1, 4, 2, 4, 3, 1],
-      image: "junhee.png",
-      songs: [
-        "아이유 - 밤편지",
-        "폴킴 - 모든 날, 모든 순간",
-        "태연 - 사계",
-        "볼빨간사춘기 - 나만, 봄",
-        "NewJeans - Ditto",
-        "DAY6 - 한 페이지가 될 수 있게",
-        "잔나비 - 주저하는 연인들을 위해",
-        "Coldplay - Yellow",
-        "AKMU - Love Lee",
-        "성시경 - 너의 모든 순간"
-      ]
-    },
-    {
-      name: "재호",
-      vector: [5, 3, 3, 2, 1, 2, 3],
-      image: "jaeho.png",
-      songs: [
-        "NewJeans - Hype Boy",
-        "IVE - I AM",
-        "LE SSERAFIM - ANTIFRAGILE",
-        "aespa - Spicy",
-        "SEVENTEEN - 손오공",
-        "BTS - Dynamite",
-        "BLACKPINK - Lovesick Girls",
-        "AKMU - Love Lee",
-        "10CM - 봄이 좋냐??",
-        "Crush - Beautiful"
-      ]
-    },
-    {
-      name: "원준",
-      vector: [2, 1, 3, 2, 5, 4, 3],
-      image: "wonjun.png",
-      songs: [
-        "검정치마 - Everything",
-        "혁오 - TOMBOY",
-        "잔나비 - 주저하는 연인들을 위해",
-        "Oasis - Don't Look Back In Anger",
-        "Nirvana - Smells Like Teen Spirit",
-        "Radiohead - Creep",
-        "DAY6 - 한 페이지가 될 수 있게",
-        "넬 - 기억을 걷는 시간",
-        "Coldplay - Yellow",
-        "성시경 - 너의 모든 순간"
-      ]
-    },
-    {
-      name: "라임",
-      vector: [4, 2, 1, 2, 5, 1, 4],
-      image: "raim.png",
-      songs: defaultSongs
-    },
-    {
-      name: "주성",
-      vector: [4, 4, 4, 5, 3, 1, 3],
-      image: "juseong.png",
-      songs: defaultSongs
-    },
-    {
-      name: "소은",
-      vector: [4, 2, 4, 3, 3, 1, 1],
-      image: "soeun.png",
-      songs: defaultSongs
-    },
-    {
-      name: "민준",
-      vector: [4, 1, 5, 2, 0, 0, 4],
-      image: "minjun.png",
-      songs: defaultSongs
-    },
-    {
-      name: "시현",
-      vector: [4, 3, 4, 3, 4, 4, 4],
-      image: "sihyeon.png",
-      songs: defaultSongs
-    },
-    {
-      name: "은찬",
-      vector: [2, 4, 3, 5, 5, 5, 4],
-      image: "eunchan.png",
-      songs: defaultSongs
-    }
+    { name: "준희", vector: [3, 1, 4, 2, 4, 3, 1], image: "junhee.png", songs: ["아이유 - 밤편지", "성시경 - 너의 모든 순간", "잔나비 - 주저하는 연인들을 위해", "혁오 - TOMBOY", "검정치마 - Everything", "DAY6 - 예뻤어", "폴킴 - 모든 날, 모든 순간", "넬 - 기억을 걷는 시간", "태연 - 사계", "Coldplay - Yellow"] },
+    { name: "재호", vector: [5, 3, 3, 2, 1, 2, 3], image: "jaeho.png", songs: ["NewJeans - Hype Boy", "IVE - I AM", "LE SSERAFIM - ANTIFRAGILE", "aespa - Spicy", "SEVENTEEN - 손오공", "BTS - Dynamite", "BLACKPINK - Lovesick Girls", "AKMU - Love Lee", "Crush - Beautiful", "John Coltrane - My Favorite Things"] },
+    { name: "원준", vector: [2, 1, 3, 2, 5, 4, 3], image: "wonjun.png", songs: ["검정치마 - Everything", "혁오 - TOMBOY", "잔나비 - 주저하는 연인들을 위해", "Oasis - Don't Look Back In Anger", "Nirvana - Smells Like Teen Spirit", "Radiohead - Creep", "DAY6 - 한 페이지가 될 수 있게", "넬 - 기억을 걷는 시간", "Coldplay - Yellow", "성시경 - 너의 모든 순간"] },
+    { name: "라임", vector: [4, 2, 1, 2, 5, 1, 4], image: "raim.png", songs: ["검정치마 - Everything", "혁오 - TOMBOY", "잔나비 - 뜨거운 여름밤은 가고 남은 건 볼품없지만", "NewJeans - Ditto", "IU - Palette", "Laufey - From The Start", "Norah Jones - Don't Know Why", "AKMU - Love Lee", "10CM - 그라데이션", "Charlie Puth - Attention"] },
+    { name: "주성", vector: [4, 4, 4, 5, 3, 1, 3], image: "juseong.png", songs: ["The Chainsmokers & Coldplay - Something Just Like This", "Alan Walker - Faded", "Zedd & Alessia Cara - Stay", "Avicii - The Nights", "NewJeans - Super Shy", "BTS - Dynamite", "Post Malone & Swae Lee - Sunflower", "Charlie Puth - Attention", "아이유 - 좋은 날", "Dave Brubeck - Take Five"] },
+    { name: "소은", vector: [4, 2, 4, 3, 3, 1, 1], image: "soeun.png", songs: ["NewJeans - Ditto", "IVE - I AM", "아이유 - 밤편지", "성시경 - 너의 모든 순간", "폴킴 - 모든 날, 모든 순간", "태연 - 사계", "AKMU - Love Lee", "볼빨간사춘기 - 나만, 봄", "Zedd & Alessia Cara - Stay", "10CM - 그라데이션"] },
+    { name: "민준", vector: [4, 1, 5, 2, 0, 0, 4], image: "minjun.png", songs: ["아이유 - 밤편지", "성시경 - 너의 모든 순간", "폴킴 - 모든 날, 모든 순간", "태연 - 만약에", "NewJeans - Ditto", "IVE - I AM", "Laufey - From The Start", "Norah Jones - Don't Know Why", "Bill Evans - Waltz For Debby", "Frank Sinatra - Fly Me To The Moon"] },
+    { name: "시현", vector: [4, 3, 4, 3, 4, 4, 4], image: "sihyeon.png", songs: ["NewJeans - Hype Boy", "아이유 - Palette", "잔나비 - 주저하는 연인들을 위해", "DAY6 - 한 페이지가 될 수 있게", "Coldplay - Viva La Vida", "Radiohead - Creep", "Laufey - From The Start", "Zedd & Alessia Cara - Stay", "AKMU - Love Lee", "Post Malone - Circles"] },
+    { name: "은찬", vector: [2, 4, 3, 5, 5, 5, 4], image: "eunchan.png", songs: ["Alan Walker - Faded", "Avicii - The Nights", "Zedd & Alessia Cara - Stay", "The Chainsmokers - Closer", "Oasis - Don't Look Back In Anger", "Nirvana - Smells Like Teen Spirit", "혁오 - TOMBOY", "Post Malone - Circles", "Laufey - From The Start", "Kendrick Lamar - HUMBLE."] }
   ];
-
   const inputArea = document.getElementById("inputArea");
-
-  genres.forEach((genre, index) => {
-    inputArea.innerHTML += `
-      <div class="genre-row">
-        <label>${genre}</label>
-        <input
-          type="range"
-          min="0"
-          max="5"
-          value="3"
-          id="genre-${index}"
-          oninput="document.getElementById('value-${index}').innerText = this.value"
-        />
-        <span id="value-${index}">3</span>
-      </div>
-    `;
-  });
-
-  function dotProduct(a, b) {
-    let sum = 0;
-    for (let i = 0; i < a.length; i++) {
-      sum += a[i] * b[i];
-    }
-    return sum;
-  }
-
-  function magnitude(vector) {
-    let sum = 0;
-    for (let i = 0; i < vector.length; i++) {
-      sum += vector[i] * vector[i];
-    }
-    return Math.sqrt(sum);
-  }
-
-  function cosineSimilarity(a, b) {
-    const dot = dotProduct(a, b);
-    const magA = magnitude(a);
-    const magB = magnitude(b);
-
-    if (magA === 0 || magB === 0) return 0;
-
-    return dot / (magA * magB);
-  }
-
+  genres.forEach((genre, index) => { inputArea.innerHTML += `<div class="genre-row"><label>${genre}</label><input type="range" min="0" max="5" value="3" id="genre-${index}" oninput="document.getElementById('value-${index}').innerText = this.value" /><span id="value-${index}">3</span></div>`; });
+  function dotProduct(a, b) { let sum = 0; for (let i = 0; i < a.length; i++) sum += a[i] * b[i]; return sum; }
+  function magnitude(vector) { let sum = 0; for (let i = 0; i < vector.length; i++) sum += vector[i] * vector[i]; return Math.sqrt(sum); }
+  function cosineSimilarity(a, b) { const dot = dotProduct(a, b); const magA = magnitude(a); const magB = magnitude(b); if (magA === 0 || magB === 0) return 0; return dot / (magA * magB); }
   function calculateSimilarity() {
-    const userVector = genres.map((genre, index) => {
-      return Number(document.getElementById(`genre-${index}`).value);
-    });
-
-    const results = users.map(user => {
-      const dot = dotProduct(userVector, user.vector);
-      const magA = magnitude(userVector);
-      const magB = magnitude(user.vector);
-      const similarity = cosineSimilarity(userVector, user.vector);
-
-      return {
-        name: user.name,
-        image: user.image,
-        songs: user.songs,
-        dot: dot,
-        magA: magA,
-        magB: magB,
-        similarity: similarity
-      };
-    });
-
+    const userVector = genres.map((genre, index) => Number(document.getElementById(`genre-${index}`).value));
+    const results = users.map(user => { const dot = dotProduct(userVector, user.vector); const magA = magnitude(userVector); const magB = magnitude(user.vector); const similarity = cosineSimilarity(userVector, user.vector); return { name: user.name, image: user.image, songs: user.songs, dot, magA, magB, similarity }; });
     results.sort((a, b) => b.similarity - a.similarity);
-
     const best = results[0];
-
     let tableRows = "";
-
-    results.forEach((result, index) => {
-      tableRows += `
-        <tr>
-          <td>${index + 1}</td>
-          <td>${result.name}</td>
-          <td>${result.dot.toFixed(2)}</td>
-          <td>${result.magA.toFixed(2)}</td>
-          <td>${result.magB.toFixed(2)}</td>
-          <td>${result.similarity.toFixed(4)}</td>
-        </tr>
-      `;
-    });
-
-    const songList = best.songs
-      .map(song => `<li>${song}</li>`)
-      .join("");
-
-    document.getElementById("result").innerHTML = `
-      <h3>입력된 사용자 취향 벡터</h3>
-      <p>a = (${userVector.join(", ")})</p>
-
-      <h3>가장 취향이 비슷한 사용자</h3>
-
-      <div class="winner">
-        <img src="${best.image}" alt="${best.name} 사진">
-
-        <div>
-          <p>
-            가장 코사인 유사도가 높은 사람은
-            <span class="highlight">${best.name}</span>입니다.
-          </p>
-
-          <p>
-            ${best.name}의 사용자 취향 벡터와의 코사인 유사도는
-            <span class="highlight">${best.similarity.toFixed(4)}</span>입니다.
-          </p>
-
-          <p class="small">
-            따라서 ${best.name}의 사용자 취향 벡터를 반영한 노래 목록을 추천합니다.
-          </p>
-        </div>
-      </div>
-
-      <h3>${best.name}의 취향 기반 추천 노래 10곡</h3>
-      <ul class="playlist">
-        ${songList}
-      </ul>
-
-      <h3>전체 코사인 유사도 비교 결과</h3>
-
-      <table>
-        <thead>
-          <tr>
-            <th>순위</th>
-            <th>사용자</th>
-            <th>a · b</th>
-            <th>|a|</th>
-            <th>|b|</th>
-            <th>cos θ</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${tableRows}
-        </tbody>
-      </table>
-
-      <p class="small">
-        실제 고정 데이터값은 화면에 표시하지 않고, 모든 사용자를 대상으로 계산한 코사인 유사도만 큰 순서대로 표시합니다.
-      </p>
-    `;
+    results.forEach((result, index) => { tableRows += `<tr><td>${index + 1}</td><td>${result.name}</td><td>${result.dot.toFixed(2)}</td><td>${result.magA.toFixed(2)}</td><td>${result.magB.toFixed(2)}</td><td>${result.similarity.toFixed(4)}</td></tr>`; });
+    const songList = best.songs.map(song => `<li>${song}</li>`).join("");
+    document.getElementById("result").innerHTML = `<h3>입력된 사용자 취향 벡터</h3><p>a = (${userVector.join(", ")})</p><h3>가장 취향이 비슷한 사용자</h3><div class="winner"><img src="${best.image}" alt="${best.name} 사진"><div><p>가장 코사인 유사도가 높은 사람은 <span class="highlight">${best.name}</span>입니다.</p><p>${best.name}의 사용자 취향 벡터와의 코사인 유사도는 <span class="highlight">${best.similarity.toFixed(4)}</span>입니다.</p><p class="small">따라서 ${best.name}의 사용자 취향 벡터를 반영한 노래 목록을 추천합니다.</p></div></div><h3>${best.name}의 취향 기반 추천 노래 10곡</h3><ul class="playlist">${songList}</ul><h3>전체 코사인 유사도 비교 결과</h3><table><thead><tr><th>순위</th><th>사용자</th><th>a · b</th><th>|a|</th><th>|b|</th><th>cos θ</th></tr></thead><tbody>${tableRows}</tbody></table><p class="small">실제 고정 데이터값은 화면에 표시하지 않고, 모든 사용자를 대상으로 계산한 코사인 유사도만 큰 순서대로 표시합니다.</p>`;
   }
 </script>
-
 </body>
 </html>
