@@ -210,7 +210,7 @@
     <h1>
       벡터 기반 코사인 유사도 활용 음악 취향 추천 프로그램
       <br>
-      with 준희, 재호, 원준
+      with 17기 엠오
     </h1>
 
     <p class="subtitle">
@@ -244,17 +244,7 @@
 
     <p>
       입력된 사용자 취향 벡터를 a라고 하면,
-      프로그램은 a와 준희·재호·원준의 사용자 취향 벡터를 각각 비교합니다.
-    </p>
-
-    <div class="formula">
-      a · 준희의 사용자 취향 벡터<br>
-      a · 재호의 사용자 취향 벡터<br>
-      a · 원준의 사용자 취향 벡터
-    </div>
-
-    <p>
-      내적은 같은 위치의 장르 점수끼리 곱한 뒤 모두 더하는 계산입니다.
+      프로그램은 a와 여러 사용자의 취향 벡터를 각각 비교합니다.
     </p>
 
     <div class="formula">
@@ -262,6 +252,7 @@
     </div>
 
     <p>
+      내적은 같은 위치의 장르 점수끼리 곱한 뒤 모두 더하는 계산입니다.
       둘 다 같은 장르를 높게 좋아하면 큰 수끼리 곱해져 내적 값이 커집니다.
       하지만 내적만 쓰면 점수를 전체적으로 높게 주는 사람이 유리할 수 있으므로,
       벡터의 크기로 나누어 방향의 유사성을 비교합니다.
@@ -290,40 +281,11 @@
 
 <section>
   <div class="card">
-    <h2>3. 사전에 지정된 사용자 취향 벡터</h2>
+    <h2>3. 비공개 고정 데이터 기반 비교</h2>
 
-    <table>
-      <thead>
-        <tr>
-          <th>사용자</th>
-          <th>K-pop</th>
-          <th>힙합</th>
-          <th>발라드</th>
-          <th>EDM</th>
-          <th>인디</th>
-          <th>Rock</th>
-          <th>재즈</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>준희</td>
-          <td>3</td><td>2</td><td>4</td><td>5</td><td>3</td><td>2</td><td>1</td>
-        </tr>
-        <tr>
-          <td>재호</td>
-          <td>5</td><td>3</td><td>3</td><td>2</td><td>1</td><td>2</td><td>3</td>
-        </tr>
-        <tr>
-          <td>원준</td>
-          <td>2</td><td>1</td><td>3</td><td>2</td><td>5</td><td>4</td><td>3</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <p class="small">
-      각 행은 한 사람의 7차원 사용자 취향 벡터입니다.
-      추천 노래는 각 사용자의 높은 선호 장르를 반영해 미리 구성했습니다.
+    <p>
+      프로그램 내부에 저장된 17기 엠오 친구들의 음악 취향 벡터와 비교합니다.
+      실제 고정 데이터값은 화면에 표시하지 않고, 계산 결과에서 코사인 유사도만 확인할 수 있습니다.
     </p>
   </div>
 </section>
@@ -333,7 +295,7 @@
     <h2>4. 가장 비슷한 사용자 찾기</h2>
 
     <p>
-      입력된 사용자 취향 벡터와 준희, 재호, 원준의 사용자 취향 벡터를 각각 비교해
+      입력된 사용자 취향 벡터와 여러 사용자의 취향 벡터를 각각 비교해
       cos θ 값이 가장 큰 사람을 찾습니다.
     </p>
 
@@ -346,28 +308,41 @@
 <script>
   const genres = ["K-pop", "힙합", "발라드", "EDM", "인디", "Rock", "재즈"];
 
+  const defaultSongs = [
+    "NewJeans - Ditto",
+    "IVE - I AM",
+    "LE SSERAFIM - ANTIFRAGILE",
+    "DAY6 - 한 페이지가 될 수 있게",
+    "잔나비 - 주저하는 연인들을 위해",
+    "아이유 - 밤편지",
+    "Coldplay - Yellow",
+    "성시경 - 너의 모든 순간",
+    "AKMU - Love Lee",
+    "폴킴 - 모든 날, 모든 순간"
+  ];
+
   const users = [
     {
       name: "준희",
-      vector: [3, 2, 4, 5, 3, 2, 1],
-      image: "junhee.jpg",
+      vector: [3, 1, 4, 2, 4, 3, 1],
+      image: "junhee.png",
       songs: [
-        "Alan Walker - Faded",
-        "Zedd, Alessia Cara - Stay",
-        "Avicii - The Nights",
-        "Marshmello, Bastille - Happier",
-        "The Chainsmokers, Coldplay - Something Just Like This",
         "아이유 - 밤편지",
         "폴킴 - 모든 날, 모든 순간",
         "태연 - 사계",
         "볼빨간사춘기 - 나만, 봄",
-        "NewJeans - Ditto"
+        "NewJeans - Ditto",
+        "DAY6 - 한 페이지가 될 수 있게",
+        "잔나비 - 주저하는 연인들을 위해",
+        "Coldplay - Yellow",
+        "AKMU - Love Lee",
+        "성시경 - 너의 모든 순간"
       ]
     },
     {
       name: "재호",
       vector: [5, 3, 3, 2, 1, 2, 3],
-      image: "jaeho.jpg",
+      image: "jaeho.png",
       songs: [
         "NewJeans - Hype Boy",
         "IVE - I AM",
@@ -384,7 +359,7 @@
     {
       name: "원준",
       vector: [2, 1, 3, 2, 5, 4, 3],
-      image: "wonjun.jpg",
+      image: "wonjun.png",
       songs: [
         "검정치마 - Everything",
         "혁오 - TOMBOY",
@@ -397,6 +372,42 @@
         "Coldplay - Yellow",
         "성시경 - 너의 모든 순간"
       ]
+    },
+    {
+      name: "라임",
+      vector: [4, 2, 1, 2, 5, 1, 4],
+      image: "raim.png",
+      songs: defaultSongs
+    },
+    {
+      name: "주성",
+      vector: [4, 4, 4, 5, 3, 1, 3],
+      image: "juseong.png",
+      songs: defaultSongs
+    },
+    {
+      name: "소은",
+      vector: [4, 2, 4, 3, 3, 1, 1],
+      image: "soeun.png",
+      songs: defaultSongs
+    },
+    {
+      name: "민준",
+      vector: [4, 1, 5, 2, 0, 0, 4],
+      image: "minjun.png",
+      songs: defaultSongs
+    },
+    {
+      name: "시현",
+      vector: [4, 3, 4, 3, 4, 4, 4],
+      image: "sihyeon.png",
+      songs: defaultSongs
+    },
+    {
+      name: "은찬",
+      vector: [2, 4, 3, 5, 5, 5, 4],
+      image: "eunchan.png",
+      songs: defaultSongs
     }
   ];
 
@@ -458,7 +469,6 @@
 
       return {
         name: user.name,
-        vector: user.vector,
         image: user.image,
         songs: user.songs,
         dot: dot,
@@ -474,11 +484,11 @@
 
     let tableRows = "";
 
-    results.forEach(result => {
+    results.forEach((result, index) => {
       tableRows += `
         <tr>
+          <td>${index + 1}</td>
           <td>${result.name}</td>
-          <td>${result.vector.join(", ")}</td>
           <td>${result.dot.toFixed(2)}</td>
           <td>${result.magA.toFixed(2)}</td>
           <td>${result.magB.toFixed(2)}</td>
@@ -522,13 +532,13 @@
         ${songList}
       </ul>
 
-      <h3>전체 계산 결과</h3>
+      <h3>전체 코사인 유사도 비교 결과</h3>
 
       <table>
         <thead>
           <tr>
+            <th>순위</th>
             <th>사용자</th>
-            <th>비교 벡터</th>
             <th>a · b</th>
             <th>|a|</th>
             <th>|b|</th>
@@ -540,9 +550,8 @@
         </tbody>
       </table>
 
-      <p>
-        이 결과는 입력된 사용자 취향 벡터 a와 각 사용자의 취향 벡터를 비교한 것입니다.
-        cos θ 값이 가장 큰 사용자는 입력된 사용자 취향과 가장 비슷한 방향을 가진 벡터입니다.
+      <p class="small">
+        실제 고정 데이터값은 화면에 표시하지 않고, 모든 사용자를 대상으로 계산한 코사인 유사도만 큰 순서대로 표시합니다.
       </p>
     `;
   }
